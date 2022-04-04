@@ -9,14 +9,14 @@ CONTEXT = ssl.create_default_context()
 
 
 # Functions
-def sms_email(number: str):
+def sms_email(number: str) -> str:
 
     """Returns the email address for the SMS number."""
 
     return f"{number}@msg.telus.com"
 
 
-def create_message(subject: str | None, body: str):
+def create_message(subject: str | None, body: str) -> str:
 
     """Returns formatted message so that subject appears properly in email."""
 

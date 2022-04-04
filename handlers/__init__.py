@@ -1,8 +1,8 @@
 # Imports
 from inspect import getmembers, ismethod
 import threading
-import cypher.utils as f
-import cypher.response as r
+import utils as f
+import response as r
 
 
 # Base event handler
@@ -269,6 +269,67 @@ class BasicsHandler(EventHandler):
         )
 
         return webhook_response
+
+    def get_headlines(self):
+
+        """Gets the latest headlines."""
+
+        # Unpacking parameters
+        params = self.parser.session.params
+        category = params.get("category")
+        key_word = params.get("key_word")
+        country = params.get("country")
+
+        # Getting articles
+        api_request = f.create_url(category, key_word, country)
+        articles = f.get_articles(api_request)
+        headlines = f.get_titles(articles)
+
+        # Responding
+
+        # Context
+        intro_text = "Here are the top 6 headlines."
+        intro = r.SimpleResponse(
+            text=intro_text,
+            speech=intro_text
+        )
+
+        # Headlines
+        headline_text = ""
+        for _ in range(len(headlines)):
+            headline_text += f"Headline Number {_ + 1}: {headlines[_]}."
+
+        headline_response = r.SimpleResponse(
+            text=headline_text,
+            speech=headline_text,
+            first=False
+        )
+
+        # Articles
+        article_list = []
+        for _ in range(len(articles)):
+
+            article = articles[_]
+
+            image = r.Image(
+                url=article["urlToImage"],
+                alt="Article image"
+            )
+
+            article_item = r.ListItem(
+                key=f"#{_}",
+                title=article["title"],
+                description=article["description"],
+                image=image
+            )
+
+            article_list.append(article_item)
+
+        list_response = r.List(
+            title="Headlines",
+            subtitle=f"Top headlines for today in {country}.",
+            items=article_list
+        )
 
 
 # Selector

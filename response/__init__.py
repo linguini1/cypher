@@ -106,15 +106,64 @@ class Suggestion:
         return representation
 
 
+class List:
+
+    def __init__(self, title: str, subtitle: str, items: list):
+        self.title = title
+        self.subtitle = subtitle
+        self.items = items
+
+    @property
+    def json_response(self):
+
+        representation = {
+            "title": self.title,
+            "subtitle": self.subtitle,
+            "items": self.items
+        }
+
+        return representation
+
+
+class ListItem:
+
+    def __init__(self, key: str, title: str, description: str, image: Image | None = None):
+        self.key = key
+        self.title = title
+        self.description = description
+        self.image = image
+
+    @property
+    def json_response(self):
+
+        representation = {
+            "key": self.key,
+            "title": self.title,
+            "description": self.description,
+        }
+
+        if self.image:
+            representation.update({"image": self.image})
+
+        return representation
+
+
 class WebhookResponse:
 
-    def __init__(self, session_id: str, simples=None, suggestions=None, override=False, params=None, card=None):
+    def __init__(
+            self,
+            session_id: str,
+            simples: list | None = None,
+            suggestions: list | None = None,
+            card: Card | None = None,
+            list_: List | None = None
+    ):
+
         self.session_id = session_id
-        self.params = params
         self.simples = simples if simples else []  # Empty array if no simple responses are passed
         self.suggestions = suggestions if suggestions else []  # Empty array if no suggestions are specified
-        self.override = override
         self.card = card
+        self.list = list_
 
     @property
     def json_response(self):
@@ -122,10 +171,9 @@ class WebhookResponse:
         representation = {
             "session": {
                 "id": self.session_id,
-                "params": self.params if self.params else {}  # Empty dict if no params
             },
             "prompt": {
-                "override": self.override,
+                "override": False,
             }
         }
 
@@ -139,5 +187,9 @@ class WebhookResponse:
         # Adding card content
         if self.card:
             representation["prompt"]["content"] = {"card": self.card.json_response}
+
+        # Adding list
+        if self.list:
+            representation["prompt"]["content"] = self.list
 
         return representation

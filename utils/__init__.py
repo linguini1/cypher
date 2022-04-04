@@ -1,6 +1,7 @@
 # Imports
 from .cuScreen import fill_cuScreen
 from .email import create_message, send_email
+from .news import create_url, get_titles, get_articles
 
 
 # Functions
