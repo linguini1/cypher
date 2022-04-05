@@ -119,7 +119,7 @@ class List:
         representation = {
             "title": self.title,
             "subtitle": self.subtitle,
-            "items": self.items
+            "items": [{"key": item["key"]} for item in self.items]
         }
 
         return representation
@@ -156,7 +156,7 @@ class WebhookResponse:
             simples: list | None = None,
             suggestions: list | None = None,
             card: Card | None = None,
-            list_: List | None = None
+            list_: List | None = None,
     ):
 
         self.session_id = session_id
@@ -191,5 +191,24 @@ class WebhookResponse:
         # Adding list
         if self.list:
             representation["prompt"]["content"] = self.list
+
+            representation["session"]["typeOverrides"] = {
+                "name": "prompt_option",
+                "synonym": {
+                    "entries": []
+                },
+                "typeOverrideMode": "TYPE_REPLACE"
+            }
+
+            entries_list = representation["session"]["typeOverrides"]["synonym"]["entries"]
+
+            for _ in range(len(self.list.items)):
+                entries_list.append(
+                    {
+                        "name": f"ITEM_{_ + 1}",
+                        "synonyms": [f"Item {_ + 1}"],
+                        "display": self.list.items[_]
+                    }
+                )
 
         return representation

@@ -331,6 +331,15 @@ class BasicsHandler(EventHandler):
             items=article_list
         )
 
+        # Return response
+        webhook_response = r.WebhookResponse(
+            session_id=self.session_id,
+            simples=[headline_response],
+            list_=list_response
+        )
+
+        return webhook_response
+
 
 # Selector
 class MainHandler(EventHandler):
