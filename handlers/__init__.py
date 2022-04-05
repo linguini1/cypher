@@ -295,7 +295,7 @@ class BasicsHandler(EventHandler):
         )
 
         # Headlines
-        """headline_text = ""
+        headline_text = ""
         for _ in range(len(headlines)):
             headline_text += f"Headline Number {_ + 1}: {headlines[_]}."
 
@@ -303,7 +303,7 @@ class BasicsHandler(EventHandler):
             text=headline_text,
             speech=headline_text,
             first=False
-        )"""
+        )
 
         # Articles
         article_list = []
@@ -337,6 +337,9 @@ class BasicsHandler(EventHandler):
             simples=[intro],
             list_=list_response
         )
+
+        if "RICH_RESPONSE" in self.device.capabilities:
+            webhook_response.simples.append(headline_response)
 
         return webhook_response
 
