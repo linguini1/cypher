@@ -124,7 +124,7 @@ class ListItem:
         }
 
         if self.image:
-            representation.update({"image": self.image})
+            representation.update({"image": self.image.json_response})
 
         return representation
 
