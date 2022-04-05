@@ -295,7 +295,7 @@ class BasicsHandler(EventHandler):
         )
 
         # Headlines
-        headline_text = ""
+        """headline_text = ""
         for _ in range(len(headlines)):
             headline_text += f"Headline Number {_ + 1}: {headlines[_]}."
 
@@ -303,7 +303,7 @@ class BasicsHandler(EventHandler):
             text=headline_text,
             speech=headline_text,
             first=False
-        )
+        )"""
 
         # Articles
         article_list = []
@@ -334,7 +334,7 @@ class BasicsHandler(EventHandler):
         # Return response
         webhook_response = r.WebhookResponse(
             session_id=self.session_id,
-            simples=[headline_response],
+            simples=[intro],
             list_=list_response
         )
 
