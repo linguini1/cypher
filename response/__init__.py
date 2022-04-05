@@ -209,9 +209,9 @@ class WebhookResponse:
             representation["prompt"]["override"] = False
 
             representation["session"]["typeOverrides"] = [{
-                "name": self.overrides["name"],
+                "name": "prompt_option",
                 "synonym": {
-                    "entries": [self.overrides["value"]]
+                    "entries": []
                 },
                 "typeOverrideMode": "TYPE_REPLACE"
             }]
