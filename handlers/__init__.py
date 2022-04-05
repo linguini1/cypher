@@ -284,7 +284,6 @@ class BasicsHandler(EventHandler):
 
         # Getting articles
         api_request = u.create_url(category, key_word, country)
-        print(api_request)
         articles = u.get_articles(api_request)
         headlines = u.get_titles(articles)
 
@@ -380,8 +379,6 @@ class MainHandler(EventHandler):
 
             # Get all events handled by given handler
             events = [event for event, value in getmembers(event_handler, predicate=ismethod)]
-
-            print(self.parser.handler.name)
 
             # Handle the event if the correct handler is found
             if self.parser.handler.name in events:
