@@ -153,6 +153,7 @@ class WebhookResponse:
     def __init__(
             self,
             session_id: str,
+            params: dict | None,
             simples: list | None = None,
             suggestions: list | None = None,
             card: Card | None = None,
@@ -160,6 +161,7 @@ class WebhookResponse:
     ):
 
         self.session_id = session_id
+        self.params = params if params else {}
         self.simples = simples if simples else []  # Empty array if no simple responses are passed
         self.suggestions = suggestions if suggestions else []  # Empty array if no suggestions are specified
         self.card = card
@@ -171,6 +173,7 @@ class WebhookResponse:
         representation = {
             "session": {
                 "id": self.session_id,
+                "params": self.params
             },
             "prompt": {
                 "override": False,

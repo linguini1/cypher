@@ -343,10 +343,13 @@ class BasicsHandler(EventHandler):
                  speech=no_results_text
             )
 
-            return r.WebhookResponse(
+            webhook_response = r.WebhookResponse(
                 session_id=self.session_id,
-                simples=[no_results]
+                simples=[no_results],
+                params={"prompt_option": "no results"}
             )
+
+            return webhook_response
 
         # Return response
         if "RICH_RESPONSE" in self.parser.device.capabilities:
