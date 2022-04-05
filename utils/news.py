@@ -28,8 +28,11 @@ def create_url(category: str | None, key_word: str | None, country: str = "ca") 
     category = f"&category={category}" if category else ""
 
     # Keywords
-    key_word.replace(" ", "%20")  # Format keyword phrase for URL
-    key_word = f"&q={key_word}" if key_word else ""
+    if key_word:
+        key_word.replace(" ", "%20")  # Format keyword phrase for URL
+        key_word = f"&q={key_word}"
+    else:
+        key_word = ""
 
     return f"{BASE_URL}?country={country}&apiKey={key}&pageSize={RESULTS}{category}{key_word}"
 
