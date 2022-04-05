@@ -190,24 +190,25 @@ class WebhookResponse:
 
         # Adding list
         if self.list:
-            representation["prompt"]["content"] = self.list.json_response
+            representation["prompt"]["content"]["list"] = self.list.json_response
+            representation["prompt"]["override"] = False
 
-            representation["session"]["typeOverrides"] = {
+            representation["session"]["typeOverrides"] = [{
                 "name": "prompt_option",
                 "synonym": {
                     "entries": []
                 },
                 "typeOverrideMode": "TYPE_REPLACE"
-            }
+            }]
 
             entries_list = representation["session"]["typeOverrides"]["synonym"]["entries"]
 
-            for _ in range(len(self.list.items)):
+            for item in self.list.items:
                 entries_list.append(
                     {
-                        "name": f"ITEM_{_ + 1}",
-                        "synonyms": [f"Item {_ + 1}"],
-                        "display": self.list.items[_].json_response
+                        "name": f"ITEM_{item.json_response['key']}",
+                        "synonyms": [f"Item {item.json_response['key']}"],
+                        "display": item.json_response
                     }
                 )
 

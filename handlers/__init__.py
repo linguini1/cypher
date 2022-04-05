@@ -317,7 +317,7 @@ class BasicsHandler(EventHandler):
             )
 
             article_item = r.ListItem(
-                key=f"#{_}",
+                key=_,
                 title=article["title"],
                 description=article["description"],
                 image=image
