@@ -108,7 +108,7 @@ class Suggestion:
 
 class ListItem:
 
-    def __init__(self, key: str, title: str, description: str, image: Image | None = None):
+    def __init__(self, key: int, title: str, description: str, image: Image | None = None):
         self.key = key
         self.title = title
         self.description = description
@@ -142,7 +142,7 @@ class List:
         representation = {
             "title": self.title,
             "subtitle": self.subtitle,
-            "items": [{"key": item.json_response["key"]} for item in self.items]
+            "items": [{"key": f"ITEM_{item.json_response['key'] + 1}"} for item in self.items]
         }
 
         return representation
