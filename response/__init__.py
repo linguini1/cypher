@@ -142,7 +142,7 @@ class List:
         representation = {
             "title": self.title,
             "subtitle": self.subtitle,
-            "items": [{"key": f"ITEM_{item.json_response['key'] + 1}"} for item in self.items]
+            "items": [{"key": f"ITEM_{item.json_response['key']}"} for item in self.items]
         }
 
         return representation
