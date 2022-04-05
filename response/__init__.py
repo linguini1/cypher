@@ -153,7 +153,7 @@ class WebhookResponse:
     def __init__(
             self,
             session_id: str,
-            params: dict | None,
+            params: dict | None = None,
             simples: list | None = None,
             suggestions: list | None = None,
             card: Card | None = None,
