@@ -106,25 +106,6 @@ class Suggestion:
         return representation
 
 
-class List:
-
-    def __init__(self, title: str, subtitle: str, items: list):
-        self.title = title
-        self.subtitle = subtitle
-        self.items = items
-
-    @property
-    def json_response(self):
-
-        representation = {
-            "title": self.title,
-            "subtitle": self.subtitle,
-            "items": [{"key": item["key"]} for item in self.items]
-        }
-
-        return representation
-
-
 class ListItem:
 
     def __init__(self, key: str, title: str, description: str, image: Image | None = None):
@@ -144,6 +125,25 @@ class ListItem:
 
         if self.image:
             representation.update({"image": self.image})
+
+        return representation
+
+
+class List:
+
+    def __init__(self, title: str, subtitle: str, items: list[ListItem]):
+        self.title = title
+        self.subtitle = subtitle
+        self.items = items
+
+    @property
+    def json_response(self):
+
+        representation = {
+            "title": self.title,
+            "subtitle": self.subtitle,
+            "items": [{"key": item.json_response["key"]} for item in self.items]
+        }
 
         return representation
 
