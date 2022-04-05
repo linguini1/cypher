@@ -142,7 +142,7 @@ class List:
         representation = {
             "title": self.title,
             "subtitle": self.subtitle,
-            "items": [{"key": f"ITEM_{item.json_response['key']}"} for item in self.items]
+            "items": [{"key": f"ITEM_{item.json_response['key'] + 1}"} for item in self.items]
         }
 
         return representation
@@ -206,7 +206,7 @@ class WebhookResponse:
             for item in self.list.items:
                 entries_list.append(
                     {
-                        "name": f"ITEM_{item.json_response['key']}",
+                        "name": f"ITEM_{item.json_response['key'] + 1}",
                         "synonyms": [f"Item {item.json_response['key']}"],
                         "display": item.json_response
                     }
