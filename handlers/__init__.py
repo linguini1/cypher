@@ -332,14 +332,17 @@ class BasicsHandler(EventHandler):
         )
 
         # Return response
-        webhook_response = r.WebhookResponse(
-            session_id=self.session_id,
-            simples=[intro],
-            list_=list_response
-        )
-
         if "RICH_RESPONSE" in self.parser.device.capabilities:
-            webhook_response.simples.append(headline_response)
+            webhook_response = r.WebhookResponse(
+                session_id=self.session_id,
+                simples=[intro],
+                list_=list_response
+            )
+        else:
+            webhook_response = r.WebhookResponse(
+                session_id=self.session_id,
+                simples=[intro, headline_response],
+            )
 
         return webhook_response
 
