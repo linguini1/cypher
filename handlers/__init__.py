@@ -333,6 +333,21 @@ class BasicsHandler(EventHandler):
             items=article_list
         )
 
+        # Override all responses if there are no results
+        if len(headlines) == 0:
+
+            no_results_text = "No results were found for this query."
+
+            no_results = r.SimpleResponse(
+                 text=no_results_text,
+                 speech=no_results_text
+            )
+
+            return r.WebhookResponse(
+                session_id=self.session_id,
+                simples=[no_results]
+            )
+
         # Return response
         if "RICH_RESPONSE" in self.parser.device.capabilities:
             webhook_response = r.WebhookResponse(
