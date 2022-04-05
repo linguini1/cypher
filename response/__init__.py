@@ -173,7 +173,6 @@ class WebhookResponse:
         representation = {
             "session": {
                 "id": self.session_id,
-                "params": self.params
             },
             "prompt": {
                 "override": False,
