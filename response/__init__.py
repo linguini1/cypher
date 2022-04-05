@@ -190,7 +190,7 @@ class WebhookResponse:
 
         # Adding list
         if self.list:
-            representation["prompt"]["content"]["list"] = self.list.json_response
+            representation["prompt"]["content"] = {"list": self.list.json_response}
             representation["prompt"]["override"] = False
 
             representation["session"]["typeOverrides"] = [{
