@@ -346,7 +346,7 @@ class BasicsHandler(EventHandler):
             webhook_response = r.WebhookResponse(
                 session_id=self.session_id,
                 simples=[no_results],
-                overrides={"name": "prompt_option", "value": "no results"}
+                params={"results": "no results"}
             )
 
             return webhook_response

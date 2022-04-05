@@ -153,7 +153,7 @@ class WebhookResponse:
     def __init__(
             self,
             session_id: str,
-            overrides: dict | None = None,
+            params: dict | None = None,
             simples: list | None = None,
             suggestions: list | None = None,
             card: Card | None = None,
@@ -161,7 +161,7 @@ class WebhookResponse:
     ):
 
         self.session_id = session_id
-        self.overrides = overrides if overrides else {}
+        self.params = params if params else {}
         self.simples = simples if simples else []  # Empty array if no simple responses are passed
         self.suggestions = suggestions if suggestions else []  # Empty array if no suggestions are specified
         self.card = card
@@ -173,6 +173,7 @@ class WebhookResponse:
         representation = {
             "session": {
                 "id": self.session_id,
+                "params": self.params,
             },
             "prompt": {
                 "override": False,
@@ -189,16 +190,6 @@ class WebhookResponse:
         # Adding card content
         if self.card:
             representation["prompt"]["content"] = {"card": self.card.json_response}
-
-        # Adding overrides
-        if self.overrides:
-            representation["session"]["typeOverrides"] = [{
-                "name": "prompt_option",
-                "synonym": {
-                    "entries": ["no_results"]
-                },
-                "typeOverrideMode": "TYPE_REPLACE"
-            }]
 
         # Adding list
         if self.list:
