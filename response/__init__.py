@@ -195,7 +195,12 @@ class WebhookResponse:
 
         # Adding transition
         if self.transition:
-            representation["scene"]["next"]["name"] = self.transition
+            representation["scene"] = {
+                "next": {
+                    "name": self.transition
+                },
+                "slots": {},
+            }
             representation["scene"]["slots"] = {}
 
         # Adding list
