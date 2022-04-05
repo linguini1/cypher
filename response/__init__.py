@@ -204,11 +204,15 @@ class WebhookResponse:
             entries_list = representation["session"]["typeOverrides"][0]["synonym"]["entries"]
 
             for item in self.list.items:
+
+                altered_item = item.json_response.copy()
+                altered_item.pop("key")
+
                 entries_list.append(
                     {
                         "name": f"ITEM_{item.json_response['key'] + 1}",
-                        "synonyms": [f"Item {item.json_response['key']}"],
-                        "display": item.json_response
+                        "synonyms": [f"Item {item.json_response['key'] + 1}"],
+                        "display": altered_item
                     }
                 )
 
