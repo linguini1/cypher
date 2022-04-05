@@ -346,7 +346,7 @@ class BasicsHandler(EventHandler):
             webhook_response = r.WebhookResponse(
                 session_id=self.session_id,
                 simples=[no_results],
-                params={"results": False}
+                transition="Reprompt"
             )
 
             return webhook_response
