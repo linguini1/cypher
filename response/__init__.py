@@ -201,7 +201,7 @@ class WebhookResponse:
                 "typeOverrideMode": "TYPE_REPLACE"
             }]
 
-            entries_list = representation["session"]["typeOverrides"]["synonym"]["entries"]
+            entries_list = representation["session"]["typeOverrides"][0]["synonym"]["entries"]
 
             for item in self.list.items:
                 entries_list.append(
