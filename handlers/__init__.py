@@ -284,6 +284,7 @@ class BasicsHandler(EventHandler):
 
         # Getting articles
         api_request = u.create_url(category, key_word, country)
+        print(api_request)
         articles = u.get_articles(api_request)
         headlines = u.get_titles(articles)
 

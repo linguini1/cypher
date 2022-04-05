@@ -14,7 +14,6 @@ def submit():
 
     # Parse data
     data = request.get_json()
-    pprint(data)
     parser = RequestParser(data)
 
     # Handle event
