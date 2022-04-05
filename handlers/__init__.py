@@ -1,7 +1,7 @@
 # Imports
 from inspect import getmembers, ismethod
 import threading
-import utils as f
+import utils as u
 import response as r
 
 
@@ -158,8 +158,8 @@ class SchoolHandler(EventHandler):
                 usr = next(file)
                 pswd = next(file)
 
-            f.complete_self_assessment(usr, pswd)
-            f.dispatch(self.sms, "Self assessment completed.", is_text=True)  # Notify when complete
+            u.complete_self_assessment(usr, pswd)
+            u.dispatch(self.sms, "Self assessment completed.", is_text=True)  # Notify when complete
 
         threading.Thread(target=executable).start()  # Run the function and let the response go out
 
@@ -241,7 +241,7 @@ class BasicsHandler(EventHandler):
         body = params["body"]
 
         # Send email
-        f.dispatch(
+        u.dispatch(
             to=email,
             subject=subject,
             body=body
@@ -280,10 +280,12 @@ class BasicsHandler(EventHandler):
         key_word = params.get("key_word")
         country = params.get("country")
 
+        country = "ca" if not country else country  # Canada is the default
+
         # Getting articles
-        api_request = f.create_url(category, key_word, country)
-        articles = f.get_articles(api_request)
-        headlines = f.get_titles(articles)
+        api_request = u.create_url(category, key_word, country)
+        articles = u.get_articles(api_request)
+        headlines = u.get_titles(articles)
 
         # Responding
 
@@ -327,7 +329,7 @@ class BasicsHandler(EventHandler):
 
         list_response = r.List(
             title="Headlines",
-            subtitle=f"Top headlines for today in {country}.",
+            subtitle=f"Top headlines for today in {u.COUNTRY_CODES[country.upper()]}.",
             items=article_list
         )
 
