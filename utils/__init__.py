@@ -61,6 +61,8 @@ def google_meet_alert(meet_code: str):
         body=format_meet_url(url)
     )
 
+    print(message)
+
     with open("resources/friend_emails.txt", "r") as file:
 
         address, password = cypher_credentials()
