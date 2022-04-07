@@ -264,7 +264,7 @@ def get_api_key() -> str:
     return key
 
 
-def create_url(category: str | None, key_word: str | None, country: str = "ca") -> str:
+def create_news_api_url(category: str | None, key_word: str | None, country: str = "ca") -> str:
 
     """Returns the URL formatted with the correct parameters."""
 
