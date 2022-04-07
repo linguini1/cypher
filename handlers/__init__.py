@@ -26,7 +26,7 @@ class EventHandler:
         self.nevermind = r.Suggestion("Nevermind")
         self.action_prompts = [
             r.Suggestion("Complete CU Screen"),
-            r.Suggestion("Get the news")
+            r.Suggestion("Get headlines")
         ]
 
     def handle_event(self):
