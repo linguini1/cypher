@@ -44,3 +44,15 @@ def send_email(to: str, from_: str, message: str, password: str, is_text=False):
             to,
             message
         )
+
+
+def cypher_credentials() -> tuple[str, str]:
+
+    """Gets the credentials for the cypher.py email."""
+
+    with open("./resources/email.txt", "r") as file:
+
+        email = next(file)
+        password = next(file)
+
+    return email, password
