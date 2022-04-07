@@ -2,7 +2,7 @@
 from .cuScreen import fill_cuScreen
 from .email import create_message, send_email, cypher_credentials
 from .news import create_news_api_url, get_titles, get_articles, COUNTRY_CODES
-from .meet import format_meet_url, MEET_ALERT_SUBJECT, meet_alert_body
+from .meet import format_meet_url, MEET_ALERT_SUBJECT, meet_alert_body, DEFAULT_CODE
 
 
 # Functions
@@ -47,6 +47,10 @@ def dispatch(to: str, subject: str = None, body: str = None, is_text: bool = Fal
 def google_meet_alert(meet_code: str):
 
     """Sends a google meet alert."""
+
+    # Check if default code is needed
+    if not meet_code:
+        meet_code = DEFAULT_CODE
 
     # Get meeting url'
     url = format_meet_url(meet_code)

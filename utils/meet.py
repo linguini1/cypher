@@ -3,6 +3,7 @@
 # Constants
 BASE_URL = "https://meet.google.com/"
 MEET_ALERT_SUBJECT = "Hey! Join the meet!"
+DEFAULT_CODE = "rrc-uaqo-vyt"
 
 
 # Functions
