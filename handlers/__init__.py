@@ -22,10 +22,11 @@ class EventHandler:
 
         # Basic suggestions
         self.yes = r.Suggestion("Yes")
-        self.no = r.Suggestion("No")
+        self.no = r.Suggestion("Nope")
         self.nevermind = r.Suggestion("Nevermind")
         self.action_prompts = [
-            r.Suggestion("Complete CU Screen")
+            r.Suggestion("Complete CU Screen"),
+            r.Suggestion("Get the news")
         ]
 
     def handle_event(self):
@@ -102,7 +103,7 @@ class SpeechResponseHandler(EventHandler):
         webhook_response = r.WebhookResponse(
             session_id=self.session_id,
             simples=[response],
-            suggestions=self.action_prompts + [self.nevermind]  # Common actions
+            suggestions=self.action_prompts + [self.no]  # Common actions
         )
 
         return webhook_response
