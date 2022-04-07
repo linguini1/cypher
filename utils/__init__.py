@@ -58,10 +58,8 @@ def google_meet_alert(meet_code: str):
     # Send out email
     message = create_message(
         subject=MEET_ALERT_SUBJECT,
-        body=format_meet_url(url)
+        body=meet_alert_body(url)
     )
-
-    print(message)
 
     with open("resources/friend_emails.txt", "r") as file:
 

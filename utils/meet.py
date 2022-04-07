@@ -26,8 +26,8 @@ def format_meet_url(code: str) -> str:
 
 def meet_alert_body(url: str) -> str:
 
-    body = f"You're personally invited to Matteo's Google Meet, taking place... NOW!" \
-           f"You can find the link here: {url}" \
+    body = f"You're personally invited to Matteo's Google Meet, taking place... NOW!\n\n" \
+           f"You can find the link here: {url}\n\n" \
            f"See you soon!"
 
     return body
