@@ -1,7 +1,8 @@
 # Imports
 from .cuScreen import fill_cuScreen
-from .email import create_message, send_email
-from .news import create_url, get_titles, get_articles, COUNTRY_CODES
+from .email import create_message, send_email, cypher_credentials
+from .news import create_news_api_url, get_titles, get_articles, COUNTRY_CODES
+from .meet import format_meet_url, MEET_ALERT_SUBJECT, meet_alert_body
 
 
 # Functions
@@ -31,9 +32,7 @@ def dispatch(to: str, subject: str = None, body: str = None, is_text: bool = Fal
         message = create_message(subject, body)
 
     # Get mailer credentials
-    with open("./resources/email.txt") as file:
-        usr = next(file)
-        pswd = next(file)
+    usr, pswd = cypher_credentials()
 
     # Send email
     send_email(
@@ -44,3 +43,29 @@ def dispatch(to: str, subject: str = None, body: str = None, is_text: bool = Fal
         is_text=is_text
     )
 
+
+def google_meet_alert(meet_code: str):
+
+    """Sends a google meet alert."""
+
+    # Get meeting url'
+    url = format_meet_url(meet_code)
+
+    # Send out email
+    message = create_message(
+        subject=MEET_ALERT_SUBJECT,
+        body=format_meet_url(url)
+    )
+
+    with open("./resources/friend_emails.txt", "r") as file:
+
+        address, password = cypher_credentials()
+
+        for email in file:
+
+            send_email(
+                to=email,
+                from_=address,
+                message=message,
+                password=password
+            )

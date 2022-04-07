@@ -283,7 +283,7 @@ class BasicsHandler(EventHandler):
         country = "ca" if not country else country  # Canada is the default
 
         # Getting articles
-        api_request = u.create_url(category, key_word, country)
+        api_request = u.create_news_api_url(category, key_word, country)
         articles = u.get_articles(api_request)
         headlines = u.get_titles(articles)
 
@@ -363,6 +363,34 @@ class BasicsHandler(EventHandler):
                 session_id=self.session_id,
                 simples=[intro, headline_response],
             )
+
+        return webhook_response
+
+    def google_meet_alert(self):
+
+        """Send a general email alert to friends that we should call."""
+
+        # Unpack params
+        params = self.parser.session.params
+        meet_code = params.get("meet_code")
+
+        # Send email
+        def executable():
+            u.google_meet_alert(meet_code)
+
+        threading.Thread(target=executable).start()
+
+        # Responding
+        success_message = "Recipients should be notified shortly."
+        success = r.SimpleResponse(
+            text=success_message,
+            speech=success_message,
+        )
+
+        webhook_response = r.WebhookResponse(
+            session_id=self.session_id,
+            simples=[success]
+        )
 
         return webhook_response
 
