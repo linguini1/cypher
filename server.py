@@ -27,4 +27,4 @@ def submit():
 
 # Run API on port 80
 if __name__ == '__main__':
-    app.run(port=80)
+    app.run(port=80, debug=True)
