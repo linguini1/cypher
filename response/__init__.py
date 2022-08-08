@@ -1,4 +1,9 @@
+# Response types for the Google Actions Console
+__author__ = "Matteo Golin"
+
 # Imports
+
+# Constants
 
 # Classes
 class Image:

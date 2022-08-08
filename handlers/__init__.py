@@ -1,8 +1,12 @@
+# Event handler classes
+__author__ = "Matteo Golin"
+
 # Imports
 from inspect import getmembers, ismethod
-import threading
-import utils as u
+import json
 import response as r
+
+# Constants
 
 
 # Base event handler
@@ -14,11 +18,15 @@ class EventHandler:
         self.parser = parser
 
         # Quick access
-        self.session_id = self.parser.session.id
+        self.session_id = self.parser.session.id_
 
-        # My sms number for notifications
-        with open("resources/sms.txt", "r") as file:
-            self.sms = next(file)
+        # Load important data
+        with open("resources/data.json") as file:
+            self.program_data = json.load(file)
+
+        # Load application credentials
+        with open("resources/credentials.json") as file:
+            self.credentials = json.load(file)
 
         # Basic suggestions
         self.yes = r.Suggestion("Yes")
@@ -109,293 +117,6 @@ class SpeechResponseHandler(EventHandler):
         return webhook_response
 
 
-class SchoolHandler(EventHandler):
-
-    def __init__(self, parser):
-        super().__init__(parser)
-
-    def say_hi(self):
-
-        """Test event handler, no practical use."""
-
-        num_hi = self.parser.session.params["num_hi"]
-
-        # Logic
-        if num_hi > 0:
-            hi_string = f"{'hi ' * num_hi}"
-            card = r.Card(
-                title="Greetings",
-                subtitle="This is how many times you wanted to say hi:",
-                text=hi_string
-            )
-
-        else:  # Error handling
-            hi_string = "I can't say hi less than 0 times!"
-            card = None
-
-        # Create simple response
-        simple_response = r.SimpleResponse(
-            first=True,
-            text=hi_string,
-            speech=hi_string
-        )
-
-        # Create webhook response
-        webhook_resp = r.WebhookResponse(
-            session_id=self.session_id,
-            simples=[simple_response],
-            card=card
-        )
-
-        return webhook_resp
-
-    def cuScreen(self):
-
-        """Fills out cuScreen self-assessment."""
-
-        def executable():
-
-            with open("resources/cuScreenCreds.txt", "r") as file:
-                usr = next(file)
-                pswd = next(file)
-
-            u.complete_self_assessment(usr, pswd)
-            u.dispatch(self.sms, "Self assessment completed.", is_text=True)  # Notify when complete
-
-        threading.Thread(target=executable).start()  # Run the function and let the response go out
-
-        success = "Your assessment should be done in a few seconds."
-
-        response = r.SimpleResponse(
-            text=success,
-            speech=success,
-        )
-
-        webhook_response = r.WebhookResponse(
-            session_id=self.session_id,
-            simples=[response]
-        )
-
-        return webhook_response
-
-
-class BasicsHandler(EventHandler):
-
-    def __init__(self, parser):
-        super().__init__(parser)
-
-    def confirm_email(self):
-
-        """Confirms email fields to user before sending."""
-
-        # Unpack params
-        params = self.parser.session.params
-        email = params["email"]
-        subject = params.get("subject")
-        body = params["body"]
-
-        # Verification depends if there is a subject line
-        if subject:
-            confirm_subject = f" with subject line {subject}"
-        else:
-            confirm_subject = ""
-
-        # Create response
-        email_speech = f"You want to send an email that says {body} to {email}{confirm_subject}."
-        read_email = r.SimpleResponse(
-            text=email_speech,
-            speech=email_speech,
-        )
-
-        verify = "Is that correct?"
-        verification = r.SimpleResponse(
-            text=verify,
-            speech=verify,
-            first=False  # Read last
-        )
-
-        # Email visual representation
-        email_card = r.Card(
-            title=f"Your email to {email}",
-            subtitle=subject,
-            text=body,
-        )
-
-        # Send response
-        webhook_response = r.WebhookResponse(
-            session_id=self.session_id,
-            simples=[read_email, verification],
-            card=email_card,
-            suggestions=[self.yes, self.no]
-        )
-
-        return webhook_response
-
-    def send_email(self):
-
-        """Sends an email with the specified message to the specified address."""
-
-        # Unpack params
-        params = self.parser.session.params
-        email = params["email"]
-        subject = params.get("subject")
-        body = params["body"]
-
-        # Send email
-        u.dispatch(
-            to=email,
-            subject=subject,
-            body=body
-        )
-
-        # Create response
-        success = "Your email has been sent to the server."
-        confirmation = r.SimpleResponse(
-            text=success,
-            speech=success,
-        )
-
-        # Card for email display.
-        email_card = r.Card(
-            title=f"Your email to {email}",
-            subtitle=subject,
-            text=body,
-        )
-
-        # Return response
-        webhook_response = r.WebhookResponse(
-            session_id=self.session_id,
-            simples=[confirmation],
-            card=email_card
-        )
-
-        return webhook_response
-
-    def get_headlines(self):
-
-        """Gets the latest headlines."""
-
-        # Unpacking parameters
-        params = self.parser.session.params
-        category = params.get("category")
-        key_word = params.get("key_word")
-        country = params.get("country")
-
-        country = "ca" if not country else country  # Canada is the default
-
-        # Getting articles
-        api_request = u.create_news_api_url(category, key_word, country)
-        articles = u.get_articles(api_request)
-        headlines = u.get_titles(articles)
-
-        # Responding
-
-        # Context
-        intro_text = "Here are the top 6 headlines."
-        intro = r.SimpleResponse(
-            text=intro_text,
-            speech=intro_text
-        )
-
-        # Headlines
-        headline_text = ""
-        for _ in range(len(headlines)):
-            headline_text += f"Headline Number {_ + 1}: {headlines[_]}."
-
-        headline_response = r.SimpleResponse(
-            text=headline_text,
-            speech=headline_text,
-            first=False
-        )
-
-        # Articles
-        article_list = []
-        for _ in range(len(articles)):
-
-            article = articles[_]
-
-            image = r.Image(
-                url=article["urlToImage"],
-                alt="Article image"
-            )
-
-            article_item = r.ListItem(
-                key=_,
-                title=article["title"],
-                description=article["description"],
-                image=image
-            )
-
-            article_list.append(article_item)
-
-        list_response = r.List(
-            title="Headlines",
-            subtitle=f"Top headlines for today in {u.COUNTRY_CODES[country.upper()]}.",
-            items=article_list
-        )
-
-        # Override all responses if there are no results
-        if len(headlines) == 0:
-
-            no_results_text = "No results were found for this query."
-
-            no_results = r.SimpleResponse(
-                 text=no_results_text,
-                 speech=no_results_text
-            )
-
-            webhook_response = r.WebhookResponse(
-                session_id=self.session_id,
-                simples=[no_results],
-                transition="Reprompt"
-            )
-
-            return webhook_response
-
-        # Return response
-        if "RICH_RESPONSE" in self.parser.device.capabilities:
-            webhook_response = r.WebhookResponse(
-                session_id=self.session_id,
-                simples=[intro],
-                list_=list_response
-            )
-        else:
-            webhook_response = r.WebhookResponse(
-                session_id=self.session_id,
-                simples=[intro, headline_response],
-            )
-
-        return webhook_response
-
-    def google_meet_alert(self):
-
-        """Send a general email alert to friends that we should call."""
-
-        # Unpack params
-        params = self.parser.session.params
-        meet_code = params.get("meet_code")
-
-        # Send email
-        def executable():
-            u.google_meet_alert(meet_code)
-
-        threading.Thread(target=executable).start()
-
-        # Responding
-        success_message = "Recipients should be notified shortly."
-        success = r.SimpleResponse(
-            text=success_message,
-            speech=success_message,
-        )
-
-        webhook_response = r.WebhookResponse(
-            session_id=self.session_id,
-            simples=[success]
-        )
-
-        return webhook_response
-
-
 # Selector
 class MainHandler(EventHandler):
 
@@ -405,8 +126,6 @@ class MainHandler(EventHandler):
         # Define all event handlers
         self.event_handlers = [
             SpeechResponseHandler,
-            SchoolHandler,
-            BasicsHandler,
         ]
 
     def get_handler(self):

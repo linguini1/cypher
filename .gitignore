@@ -1,1 +1,5 @@
-*.txt
+# Application credentials
+credentials.json
+
+# Program data
+data.json
